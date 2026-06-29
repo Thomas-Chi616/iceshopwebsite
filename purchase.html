@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東民冰菓室 | 線上訂購</title>
+    <meta name="description" content="東民冰菓室線上訂購，為您提供最方便快捷的消暑美味預約服務。">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-snowflake"></i> 東民冰菓室
+            </a>
+            <nav class="nav-links" style="display: flex;">
+                <a href="index.html#menu"><i class="fa-solid fa-arrow-left"></i> 返回菜單</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Purchase Section -->
+    <main class="purchase-section">
+        <div class="container purchase-grid">
+            
+            <!-- Left Side: Product Detail -->
+            <div class="product-detail-card glass-card">
+                <div class="menu-icon" id="product-icon">
+                    <i class="fa-solid fa-ice-cream"></i>
+                </div>
+                <h2 id="product-name">載入中...</h2>
+                <span class="price-tag" id="product-price">$0</span>
+                <p class="desc" id="product-desc">正在為您準備產品詳細資料，請稍候...</p>
+            </div>
+            
+            <!-- Right Side: Order Form -->
+            <form class="purchase-form glass-card" id="order-form" onsubmit="event.preventDefault();">
+                
+                <!-- 產品配料 (Ingredients) -->
+                <div class="form-group">
+                    <label>產品配料</label>
+                    <div id="default-ingredients-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+                        <!-- Default ingredients tags will be inserted here -->
+                    </div>
+                    <small style="color: var(--text-light); display: block; margin-bottom: 10px;">加購配料 (每項 +$10)：</small>
+                    <div class="toppings-grid" id="toppings-container">
+                        <!-- Toppings checkboxes will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- 選擇訂購數量 (Quantity) -->
+                <div class="form-group">
+                    <label for="quantity">訂購數量</label>
+                    <div class="qty-control">
+                        <button type="button" class="qty-btn" id="qty-minus">-</button>
+                        <input type="text" id="quantity" class="qty-input" value="1" readonly>
+                        <button type="button" class="qty-btn" id="qty-plus">+</button>
+                    </div>
+                </div>
+                
+                <!-- 顧客基本資料 (Customer Info) -->
+                <div class="form-group">
+                    <label for="customer-name">訂購人姓名 *</label>
+                    <input type="text" id="customer-name" class="form-input" placeholder="請輸入您的姓名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer-phone">聯絡電話 *</label>
+                    <input type="tel" id="customer-phone" class="form-input" placeholder="請輸入手機號碼" required pattern="^09[0-9]{8}$" title="請輸入有效的手機號碼 (例如: 0912345678)">
+                </div>
+
+                <div class="form-group">
+                    <label for="order-notes">備註說明</label>
+                    <input type="text" id="order-notes" class="form-input" placeholder="例如: 冰少一點、不要太甜、配料分開裝等">
+                </div>
+
+                <!-- 金額加總 (Total Price) -->
+                <div class="price-summary-card">
+                    <span class="label">應付總金額</span>
+                    <span class="amount" id="total-amount">$0</span>
+                </div>
+                
+                <!-- 確定訂單按鈕 (Confirm Button) -->
+                <button type="submit" class="btn primary-btn" style="width: 100%; font-size: 1.1rem; padding: 15px;">確定訂單</button>
+            </form>
+            
+        </div>
+    </main>
+
+    <!-- Success Modal Overlay -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fa-solid fa-circle-check"></i>
+                <h3>訂單已確定！</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 5px;">感謝您的訂購，請憑此明細至櫃檯取餐付費</p>
+            </div>
+            <div class="receipt-details">
+                <div class="receipt-row">
+                    <span>取餐編號</span>
+                    <span id="receipt-id" style="font-weight: 700; color: var(--primary-dark);">DM-00000</span>
+                </div>
+                <div class="receipt-row">
+                    <span>品名</span>
+                    <span id="receipt-item">東民綜合招牌冰</span>
+                </div>
+                <div class="receipt-row">
+                    <span>數量</span>
+                    <span id="receipt-qty">1</span>
+                </div>
+                <div class="receipt-row">
+                    <span>追加配料</span>
+                    <span id="receipt-toppings">無</span>
+                </div>
+                <div class="receipt-row">
+                    <span>訂購人</span>
+                    <span id="receipt-customer">王小明</span>
+                </div>
+                <div class="receipt-row">
+                    <span>聯絡電話</span>
+                    <span id="receipt-phone">0912345678</span>
+                </div>
+                <div class="receipt-row">
+                    <span>備註</span>
+                    <span id="receipt-notes">無</span>
+                </div>
+                <div class="receipt-row">
+                    <span>總金額</span>
+                    <span id="receipt-total">$80</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn primary-btn" id="close-modal-btn" style="width: 100%;">返回首頁</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 東民冰菓室 Dongmin Ice Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase dynamic JavaScript -->
+    <script src="purchase.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東民冰菓室 | 沁涼一夏</title>
+    <meta name="description" content="東民冰菓室，為您提供最天然、純粹的消暑聖品。招牌冰品、雪花冰、季節限定水果冰，以及各式手作配料。">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <i class="fa-solid fa-snowflake"></i> 東民冰菓室
+            </a>
+            <nav class="nav-links">
+                <a href="#home">首頁</a>
+                <a href="#about">品牌介紹</a>
+                <a href="#menu">菜單</a>
+                <a href="#features">店家特色</a>
+                <a href="#news">最新消息</a>
+                <a href="#gallery">相簿</a>
+                <a href="#contact">聯絡我們</a>
+            </nav>
+            <div class="hamburger">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section (Parallax) -->
+    <section id="home" class="hero parallax">
+        <div class="hero-content glass-card fade-in">
+            <h1>東民冰菓室</h1>
+            <p>堅持純粹，手作幸福滋味</p>
+            <p class="subtitle">天然食材 ✕ 特製雪花冰磚</p>
+            <a href="#menu" class="btn primary-btn">查看沁涼菜單</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">品牌介紹 <span class="subtitle">About Us</span></h2>
+            <div class="about-grid">
+                <div class="about-text fade-in">
+                    <h3><i class="fa-solid fa-book-open"></i> 店家故事</h3>
+                    <p>東民冰菓室源於對純粹冰品的熱愛。我們相信，一碗好冰，不僅能帶來清涼，更能喚起人們心中最純粹的快樂記憶。從選材到製作，我們嚴格把關每一道工序，只為呈現最完美的風味。</p>
+                    
+                    <h3><i class="fa-solid fa-heart"></i> 經營理念</h3>
+                    <p>「以誠待客，以心製冰」。我們堅持使用新鮮水果與天然食材，拒絕人工添加物，讓顧客吃得安心、吃得健康，感受每一口冰品帶來的誠意。</p>
+                    
+                    <h3><i class="fa-solid fa-leaf"></i> 食材與製作特色</h3>
+                    <p>我們精選在地當季水果，並每日親手熬煮配料（如紅豆、綠豆、芋圓等）。招牌的雪花冰磚更是獨家自製，口感綿密細緻，入口即化，帶給您極致的冰涼體驗。</p>
+                </div>
+                <div class="about-image fade-in">
+                    <img src="assets/images/shaved_ice_hero.png" alt="招牌冰品">
+                    <div class="img-backdrop"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">美味菜單 <span class="subtitle">Menu</span></h2>
+            
+            <div class="menu-tabs fade-in">
+                <button class="tab-btn active" data-target="signature">招牌冰品</button>
+                <button class="tab-btn" data-target="shaved">傳統剉冰</button>
+                <button class="tab-btn" data-target="snow">雪花冰</button>
+                <button class="tab-btn" data-target="seasonal">季節限定</button>
+                <button class="tab-btn" data-target="toppings">精選配料</button>
+                <button class="tab-btn" data-target="others">其他餐點</button>
+            </div>
+
+            <div class="menu-content fade-in">
+                <!-- Signature Ice -->
+                <div class="menu-category active" id="signature">
+                    <div class="menu-grid">
+                        <a href="purchase.html?item=signature_mixed" class="menu-card glass-card">
+                            <div class="menu-icon"><i class="fa-solid fa-star"></i></div>
+                            <h4>東民綜合招牌冰</h4>
+                            <p>滿滿手工配料，經典不敗的絕佳組合。</p>
+                            <span class="price">$80</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=mango-duet" class="menu-card glass-card">
+                            <div class="menu-icon"><i class="fa-solid fa-crown"></i></div>
+                            <h4>超級芒果雙重奏</h4>
+                            <p>新鮮芒果塊搭配芒果雪花冰，極致享受。</p>
+                            <span class="price">$150</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Shaved Ice -->
+                <div class="menu-category" id="shaved">
+                    <div class="menu-grid">
+                        <a href="purchase.html?item=brown-sugar" class="menu-card glass-card">
+                            <h4>古早味黑糖剉冰</h4>
+                            <p>自製濃郁黑糖水，可任選四種配料。</p>
+                            <span class="price">$65</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=pineapple-ice" class="menu-card glass-card">
+                            <h4>鳳梨冰</h4>
+                            <p>古法熬煮鳳梨醬，酸甜清爽解膩。</p>
+                            <span class="price">$70</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Snow Ice -->
+                <div class="menu-category" id="snow">
+                    <div class="menu-grid">
+                        <a href="purchase.html?item=milk-snow" class="menu-card glass-card">
+                            <h4>牛奶綿綿雪花冰</h4>
+                            <p>純濃鮮奶製成，奶香四溢。</p>
+                            <span class="price">$90</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=matcha-snow" class="menu-card glass-card">
+                            <h4>抹茶紅豆雪花冰</h4>
+                            <p>日式靜岡抹茶搭配蜜紅豆。</p>
+                            <span class="price">$110</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Seasonal -->
+                <div class="menu-category" id="seasonal">
+                    <div class="menu-grid">
+                        <a href="purchase.html?item=mango-seasonal" class="menu-card glass-card">
+                            <h4>夏季限定：新鮮芒果冰</h4>
+                            <p>產地直送愛文芒果，香氣濃郁。</p>
+                            <span class="price">$140</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=strawberry-seasonal" class="menu-card glass-card">
+                            <h4>冬季限定：草莓戀人冰</h4>
+                            <p>嚴選大湖草莓，酸甜戀愛滋味。</p>
+                            <span class="price">$160</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Toppings -->
+                <div class="menu-category" id="toppings">
+                    <div class="menu-grid">
+                        <div class="menu-card glass-card topping-card">
+                            <h4>手熬紅豆</h4>
+                        </div>
+                        <div class="menu-card glass-card topping-card">
+                            <h4>綿密綠豆</h4>
+                        </div>
+                        <div class="menu-card glass-card topping-card">
+                            <h4>Q彈粉圓</h4>
+                        </div>
+                        <div class="menu-card glass-card topping-card">
+                            <h4>手工芋圓/地瓜圓</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Others -->
+                <div class="menu-category" id="others">
+                    <div class="menu-grid">
+                        <a href="purchase.html?item=fry-platter" class="menu-card glass-card">
+                            <h4>酥脆炸物拼盤</h4>
+                            <p>薯條、雞塊、洋蔥圈。</p>
+                            <span class="price">$120</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=waffle" class="menu-card glass-card">
+                            <h4>蜂蜜鬆餅</h4>
+                            <p>現烤外酥內軟，搭配鮮奶油。</p>
+                            <span class="price">$90</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                        <a href="purchase.html?item=drinks" class="menu-card glass-card">
+                            <h4>各式冷飲</h4>
+                            <p>紅茶、綠茶、鮮奶茶等。</p>
+                            <span class="price">$40起</span>
+                            <span class="order-btn">立即訂購</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section (Parallax) -->
+    <section id="features" class="section parallax features-parallax">
+        <div class="container relative">
+            <h2 class="section-title text-white">店家特色 <span class="subtitle text-light">Features</span></h2>
+            <div class="features-grid">
+                <div class="feature-card glass-card fade-in">
+                    <i class="fa-solid fa-cube"></i>
+                    <h3>自製雪花冰磚</h3>
+                    <p>不使用代工廠，我們親自調配每一塊雪花冰磚，確保口感與品質的完美。</p>
+                </div>
+                <div class="feature-card glass-card fade-in">
+                    <i class="fa-solid fa-droplet"></i>
+                    <h3>衛生冰塊</h3>
+                    <p>使用多重過濾淨水設備製冰，確保每一口冰都純淨無瑕、安全衛生。</p>
+                </div>
+                <div class="feature-card glass-card fade-in">
+                    <i class="fa-solid fa-fire-burner"></i>
+                    <h3>每日現煮配料</h3>
+                    <p>豆類與圓類配料堅持每日清晨新鮮現煮，保留食材最佳的口感與香氣。</p>
+                </div>
+                <div class="feature-card glass-card fade-in">
+                    <i class="fa-solid fa-eye"></i>
+                    <h3>透明製作過程</h3>
+                    <p>開放式吧台設計，讓您能親眼見證冰品製作的每一個步驟，吃得更安心。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Gallery Section -->
+    <section class="section" style="padding-bottom: 0;">
+        <div class="container">
+            <div class="news-gallery-wrapper">
+                <!-- News -->
+                <div id="news" class="news-section fade-in">
+                    <h2 class="section-title">最新消息 <span class="subtitle">News</span></h2>
+                    <ul class="news-list">
+                        <li>
+                            <span class="news-date">2026/06/01</span>
+                            <span class="news-tag highlight">季節限定</span>
+                            <span class="news-text">夏日芒果季正式開跑！愛文芒果冰重磅回歸。</span>
+                        </li>
+                        <li>
+                            <span class="news-date">2026/05/20</span>
+                            <span class="news-tag">優惠活動</span>
+                            <span class="news-text">歡慶端午，指定冰品第二件半價！</span>
+                        </li>
+                        <li>
+                            <span class="news-date">2026/05/10</span>
+                            <span class="news-tag">營業公告</span>
+                            <span class="news-text">夏季營業時間調整：週一至週日 11:00 - 22:00。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Gallery Preview -->
+                <div id="gallery" class="gallery-preview fade-in">
+                    <h2 class="section-title">精選相簿 <span class="subtitle">Gallery</span></h2>
+                    <div class="gallery-grid">
+                        <div class="gallery-item"><img src="assets/images/shaved_ice_hero.png" alt="冰品照片"></div>
+                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-store"></i> 店內環境</div></div>
+                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-blender"></i> 製作過程</div></div>
+                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-ice-cream"></i> 更多冰品</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location & Contact -->
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">聯絡我們 <span class="subtitle">Location & Contact</span></h2>
+            <div class="contact-grid fade-in">
+                <div class="contact-info glass-card">
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <h4>地址</h4>
+                            <p>台北市大安區冰店路123號</p>
+                            <small class="notice">* 附近有收費停車場，機車可停放於門口停車格</small>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <div>
+                            <h4>電話聯絡</h4>
+                            <p>02-2345-6789</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <div>
+                            <h4>營業時間</h4>
+                            <p>週一至週日 11:00 - 22:00</p>
+                            <p>(不定期公休請見粉專公告)</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Line"><i class="fa-brands fa-line"></i></a>
+                    </div>
+                </div>
+                <div class="map-container glass-card">
+                    <!-- Placeholder for Google Maps -->
+                    <div class="map-placeholder">
+                        <i class="fa-solid fa-map-location-dot fa-3x"></i>
+                        <p>Google Map 載入區域</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 東民冰菓室 Dongmin Ice Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
