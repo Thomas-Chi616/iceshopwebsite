@@ -1,69 +1,38 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Navbar Scroll Effect
-    const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.querySelector(".hamburger");
+  const navLinks = document.querySelector(".nav-links");
+  if (hamburger && navLinks) {
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
     });
 
-    // 2. Mobile Menu Toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => navLinks.classList.remove("active"));
     });
+  }
 
-    // Close mobile menu when clicking a link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-        });
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const categories = document.querySelectorAll(".menu-category");
+  tabButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.target;
+      tabButtons.forEach(btn => btn.classList.remove("active"));
+      categories.forEach(category => category.classList.remove("active"));
+      button.classList.add("active");
+      const targetCategory = document.getElementById(target);
+      if (targetCategory) targetCategory.classList.add("active");
     });
+  });
 
-    // 3. Menu Tabs functionality
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const menuCategories = document.querySelectorAll('.menu-category');
-
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all buttons and categories
-            tabBtns.forEach(b => b.classList.remove('active'));
-            menuCategories.forEach(c => c.classList.remove('active'));
-
-            // Add active class to clicked button
-            btn.classList.add('active');
-
-            // Show corresponding category
-            const targetId = btn.getAttribute('data-target');
-            document.getElementById(targetId).classList.add('active');
-        });
+  const fadeItems = document.querySelectorAll(".fade-in");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
     });
+  }, { threshold: 0.14 });
 
-    // 4. Scroll Animation (Intersection Observer for fade-in)
-    const fadeElements = document.querySelectorAll('.fade-in');
-
-    const appearOptions = {
-        threshold: 0.15,
-        rootMargin: "0px 0px -50px 0px"
-    };
-
-    const appearOnScroll = new IntersectionObserver(function(entries, observer) {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) {
-                return;
-            } else {
-                entry.target.classList.add('appear');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, appearOptions);
-
-    fadeElements.forEach(element => {
-        appearOnScroll.observe(element);
-    });
+  fadeItems.forEach(item => observer.observe(item));
 });
