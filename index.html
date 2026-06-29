@@ -3,319 +3,849 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東民冰菓室 | 沁涼一夏</title>
-    <meta name="description" content="東民冰菓室，為您提供最天然、純粹的消暑聖品。招牌冰品、雪花冰、季節限定水果冰，以及各式手作配料。">
+    <title>東民冰菓室 | 堅持純粹，手作幸福滋味</title>
+    <meta name="description" content="東民冰菓室，採用有機鼠尾草綠與奶油配色，結合流暢的平滑滾動與 GSAP 捲動驅動互動，為您提供最天然、純粹的消暑聖品。招牌冰品、雪花冰、季節限定水果冰。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">
-                <i class="fa-solid fa-snowflake"></i> 東民冰菓室
-            </a>
-            <nav class="nav-links">
-                <a href="#home">首頁</a>
-                <a href="#about">品牌介紹</a>
-                <a href="#menu">菜單</a>
-                <a href="#features">店家特色</a>
-                <a href="#news">最新消息</a>
-                <a href="#gallery">相簿</a>
-                <a href="#contact">聯絡我們</a>
-            </nav>
-            <div class="hamburger">
-                <i class="fa-solid fa-bars"></i>
+    <!-- React Application Mount Point -->
+    <div id="root"></div>
+
+    <!-- Core CDN Libraries -->
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel Standalone for in-browser JSX parsing -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Smooth Scrolling: Lenis -->
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+    <!-- Animation: GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Main React Application Script (Compiled by Babel) -->
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      // ==========================================================================
+      // Mock Data (Consistent with user's Sitemap and blueprints)
+      // ==========================================================================
+      const MENU_DATA = {
+        signature: [
+          { id: 'mixed', name: '東民綜合招牌冰', price: 80, desc: '滿滿手工配料，搭配特製古早味糖水，經典不敗的消暑組合。', icon: 'fa-star', ingredients: ['紅豆', '綠豆', '芋圓', '粉圓'] },
+          { id: 'mango', name: '超級芒果雙重奏', price: 150, desc: '特製芒果雪花冰磚，鋪滿新鮮切塊愛文芒果，再淋上濃郁手工芒果醬。', icon: 'fa-crown', ingredients: ['新鮮芒果', '芒果雪花冰磚', '手工芒果醬'] },
+          { id: 'brown_sugar', name: '古早味黑糖剉冰', price: 65, desc: '自家手工熬煮黃金濃郁黑糖水，清甜解渴，可任選四種配料。', icon: 'fa-ice-cream', ingredients: ['特製黑糖水', '手挫衛生冰'] },
+          { id: 'pineapple', name: '古法蜜漬鳳梨冰', price: 70, desc: '新鮮土鳳梨慢火蜜漬熬煮，酸甜交織，消暑回甘的古早滋味。', icon: 'fa-lemon', ingredients: ['蜜漬土鳳梨', '鳳梨原汁'] }
+        ],
+        snow: [
+          { id: 'milk_snow', name: '牛奶綿綿雪花冰', price: 90, desc: '100%紐西蘭純鮮乳製作雪花冰磚，口感如細雪般綿密，奶香四溢。', icon: 'fa-cow', ingredients: ['鮮奶雪花冰磚', '煉乳'] },
+          { id: 'matcha_snow', name: '日式宇治金時雪花冰', price: 110, desc: '極品宇治抹茶雪花冰，搭配綿密手熬蜜紅豆與Q彈手工白玉小湯圓。', icon: 'fa-leaf', ingredients: ['宇治抹茶冰磚', '蜜紅豆', '白玉湯圓'] },
+          { id: 'strawberry_snow', name: '冬季限定：草莓戀人雪花冰', price: 160, desc: '嚴選新鮮大湖草莓，鋪滿煉乳雪花冰，酸酸甜甜的夢幻滋味。', icon: 'fa-heart', ingredients: ['新鮮草莓', '煉乳雪花冰磚', '草莓淋醬'] }
+        ],
+        toppings: [
+          { id: 'red_bean', name: '手熬蜜紅豆', desc: '嚴選屏東萬丹紅豆，慢火燉煮數小時，綿密香甜，顆粒飽滿不爛。', icon: 'fa-seedling' },
+          { id: 'green_bean', name: '細沙毛綠豆', desc: '古法燜煮去殼綠豆，沙軟綿密，入口即化，消暑清熱的首選配料。', icon: 'fa-bowl-rice' },
+          { id: 'taro_balls', name: '手工芋圓/地瓜圓', desc: '嚴選大甲芋頭與金山紅心番薯，每日手工揉製，極致Q彈，越嚼越香。', icon: 'fa-circle' },
+          { id: 'pearls', name: '手工黑糖粉圓', desc: '新鮮慢火蜜漬黑糖，口感圓潤有嚼勁，糖香入味，每一顆都Q彈飽滿。', icon: 'fa-ellipsis-h' }
+        ],
+        others: [
+          { id: 'fry_platter', name: '黃金酥脆炸物拼盤', price: 120, desc: '現點現炸黃金脆薯、脆皮雞塊與洋蔥圈，外酥內嫩，聚會分享首選。', icon: 'fa-utensils', ingredients: ['金黃脆薯', '麥克雞塊', '酥炸洋蔥圈'] },
+          { id: 'waffle', name: '蜂蜜鮮奶油鬆餅', price: 90, desc: '現烤美式格子鬆餅，外皮酥脆內裡鬆軟，附優質純鮮奶油與天然熟蜜。', icon: 'fa-cookie', ingredients: ['現烤格子鬆餅', '優質鮮奶油', '熟成蜂蜜'] },
+          { id: 'winter_lemon', name: '手作冬瓜檸檬', price: 45, desc: '在地新鮮冬瓜熬煮成糖磚沖泡，加入現榨新鮮檸檬汁，酸甜交織極致解渴。', icon: 'fa-droplet', ingredients: ['自熬冬瓜露', '現榨檸檬汁'] },
+          { id: 'assam_tea', name: '經典手沖阿薩姆紅茶', price: 40, desc: '嚴選優質阿薩姆紅茶葉黃金比例手沖，茶香深邃，回甘帶有淡淡麥芽香。', icon: 'fa-mug-hot', ingredients: ['阿薩姆紅茶'] }
+        ]
+      };
+
+      const NEWS_DATA = [
+        { id: 1, date: '2026/06/01', tag: '季節限定', isHighlight: true, title: '夏季芒果祭正式開跑！產地直送愛文芒果冰重磅回歸！' },
+        { id: 2, date: '2026/05/20', tag: '優惠活動', isHighlight: false, title: '歡慶端午佳節！全店任選指定冰品第二件半價！' },
+        { id: 3, date: '2026/05/10', tag: '營業公告', isHighlight: false, title: '夏季營業時間調整：週一至週日 11:00 - 22:00（不定期公休）' }
+      ];
+
+      const GALLERY_DATA = [
+        { id: 1, title: '招牌芒果雪花冰', img: 'assets/images/shaved_ice_hero.png', icon: 'fa-star' },
+        { id: 2, title: '古早味配料熬煮', img: 'assets/images/cooking_ingredients.png', icon: 'fa-fire-burner' },
+        { id: 3, title: '店內日系清幽環境', img: 'assets/images/shop_interior.png', icon: 'fa-store' },
+        { id: 4, title: '精選新鮮在地食材', img: 'assets/images/fresh_fruits.png', icon: 'fa-leaf' }
+      ];
+
+      const TOPPINGS_ADDON_LIST = [
+        { name: '手熬蜜紅豆', price: 10 },
+        { name: '細沙毛綠豆', price: 10 },
+        { name: '手工芋圓/地瓜圓', price: 10 },
+        { name: '手工黑糖粉圓', price: 10 }
+      ];
+
+      // ==========================================================================
+      // Main React Application Component
+      // ==========================================================================
+      function App() {
+        const [activeSection, setActiveSection] = useState('home');
+        const [mobileNavOpen, setMobileNavOpen] = useState(false);
+        const [menuTab, setMenuTab] = useState('signature');
+        
+        // Order states
+        const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+        const [selectedProduct, setSelectedProduct] = useState(null);
+        const [orderQuantity, setOrderQuantity] = useState(1);
+        const [selectedAddons, setSelectedAddons] = useState([]);
+        const [customerName, setCustomerName] = useState('');
+        const [customerPhone, setCustomerPhone] = useState('');
+        const [orderNotes, setOrderNotes] = useState('');
+        const [orderSuccess, setOrderSuccess] = useState(false);
+        const [receiptData, setReceiptData] = useState(null);
+
+        // Form submission state
+        const [contactName, setContactName] = useState('');
+        const [contactEmail, setContactEmail] = useState('');
+        const [contactMessage, setContactMessage] = useState('');
+        const [contactSubmitted, setContactSubmitted] = useState(false);
+
+        // Lenis ref
+        const lenisRef = useRef(null);
+
+        // Initialize Lenis and GSAP animations
+        useEffect(() => {
+          // 1. Initialize Lenis Smooth Scroll
+          const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+            smoothTouch: false,
+          });
+          lenisRef.current = lenis;
+
+          // Connect Lenis to requestAnimationFrame
+          function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+          }
+          requestAnimationFrame(raf);
+
+          // Synchronize GSAP ScrollTrigger with Lenis
+          lenis.on('scroll', ScrollTrigger.update);
+          gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+          });
+          gsap.ticker.lagSmoothing(0);
+
+          // 2. Set up active nav link tracker & background image discrete shifter via ScrollTrigger
+          const sections = ['home', 'about', 'menu', 'features', 'news', 'gallery', 'location', 'contact'];
+          const positions = {
+            home: "0vw",
+            about: "22vw",
+            menu: "-22vw",
+            features: "18vw",
+            news: "-18vw",
+            gallery: "22vw",
+            location: "-22vw",
+            contact: "15vw"
+          };
+
+          sections.forEach(section => {
+            ScrollTrigger.create({
+              trigger: `#${section}`,
+              start: "top 45%",
+              end: "bottom 45%",
+              onEnter: () => {
+                setActiveSection(section);
+                if (window.innerWidth > 768) {
+                  gsap.to(".floating-product-container", {
+                    x: positions[section],
+                    duration: 1.6,
+                    ease: "power2.out"
+                  });
+                }
+              },
+              onEnterBack: () => {
+                setActiveSection(section);
+                if (window.innerWidth > 768) {
+                  gsap.to(".floating-product-container", {
+                    x: positions[section],
+                    duration: 1.6,
+                    ease: "power2.out"
+                  });
+                }
+              },
+            });
+          });
+
+          // 3. GSAP Core Parallax Timelines (Responsive via matchMedia)
+          let mm = gsap.matchMedia();
+
+          mm.add("(min-width: 769px)", () => {
+
+            // Features Pinned Section (Feature cards sequential entrance)
+            const featuresTimeline = gsap.timeline({
+              scrollTrigger: {
+                trigger: "#features",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1,
+              }
+            });
+
+            // Setup initial positions for callouts
+            gsap.set(".feature-callout", { opacity: 0, y: 40 });
+
+            featuresTimeline
+              .to("#feature-1", { opacity: 1, y: 0, duration: 0.35 })
+              .to("#feature-1", { opacity: 0.15, y: -10, duration: 0.25, delay: 0.1 })
+              
+              .to("#feature-2", { opacity: 1, y: 0, duration: 0.35 })
+              .to("#feature-2", { opacity: 0.15, y: -10, duration: 0.25, delay: 0.1 })
+              
+              .to("#feature-3", { opacity: 1, y: 0, duration: 0.35 })
+              .to("#feature-3", { opacity: 0.15, y: -10, duration: 0.25, delay: 0.1 })
+              
+              .to("#feature-4", { opacity: 1, y: 0, duration: 0.35 });
+
+            // Simple header fade-in / parallax triggers for sections
+            const animatedSections = ['#about', '#menu', '#news', '#gallery', '#location', '#contact'];
+            animatedSections.forEach(selector => {
+              gsap.from(`${selector} .section-title`, {
+                scrollTrigger: {
+                  trigger: selector,
+                  start: "top 80%",
+                  toggleActions: "play none none reverse"
+                },
+                opacity: 0,
+                y: 40,
+                duration: 1,
+                ease: "power3.out"
+              });
+            });
+          });
+
+          mm.add("(max-width: 768px)", () => {
+            // Mobile: Clear desktop scroll triggers to prevent layout breaking
+            gsap.set(".floating-product-container", { clearProps: "all" });
+            gsap.set(".feature-callout", { clearProps: "all" });
+          });
+
+          // Clean up
+          return () => {
+            lenis.destroy();
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            mm.revert();
+          };
+        }, []);
+
+        // Helper function to smooth scroll to selector via Lenis
+        const scrollToSection = (e, id) => {
+          e.preventDefault();
+          setMobileNavOpen(false);
+          const element = document.getElementById(id);
+          if (element && lenisRef.current) {
+            lenisRef.current.scrollTo(element, { offset: -60, duration: 1.5 });
+          }
+        };
+
+        // Order modal handlers
+        const handleOpenOrder = (product) => {
+          setSelectedProduct(product);
+          setOrderQuantity(1);
+          setSelectedAddons([]);
+          setCustomerName('');
+          setCustomerPhone('');
+          setOrderNotes('');
+          setOrderSuccess(false);
+          setReceiptData(null);
+          setIsOrderModalOpen(true);
+          if (lenisRef.current) lenisRef.current.stop();
+        };
+
+        const handleCloseOrder = () => {
+          setIsOrderModalOpen(false);
+          setSelectedProduct(null);
+          if (lenisRef.current) lenisRef.current.start();
+        };
+
+        const handleToggleAddon = (addon) => {
+          if (selectedAddons.includes(addon.name)) {
+            setSelectedAddons(selectedAddons.filter(a => a !== addon.name));
+          } else {
+            setSelectedAddons([...selectedAddons, addon.name]);
+          }
+        };
+
+        const calculateTotal = () => {
+          if (!selectedProduct) return 0;
+          const basePrice = selectedProduct.price || 0;
+          const addonsPrice = selectedAddons.length * 10;
+          return (basePrice + addonsPrice) * orderQuantity;
+        };
+
+        const handleConfirmOrder = (e) => {
+          e.preventDefault();
+          if (!customerName || !customerPhone) return;
+          
+          const orderId = 'DM-' + Math.floor(10000 + Math.random() * 90000);
+          const orderDetails = {
+            id: orderId,
+            productName: selectedProduct.name,
+            price: selectedProduct.price,
+            quantity: orderQuantity,
+            addons: selectedAddons.length > 0 ? selectedAddons.join('、') : '無',
+            customerName,
+            customerPhone,
+            notes: orderNotes || '無',
+            total: calculateTotal()
+          };
+          
+          setReceiptData(orderDetails);
+          setOrderSuccess(true);
+        };
+
+        const handleContactSubmit = (e) => {
+          e.preventDefault();
+          if (!contactName || !contactEmail || !contactMessage) return;
+          setContactSubmitted(true);
+          setTimeout(() => {
+            setContactSubmitted(false);
+            setContactName('');
+            setContactEmail('');
+            setContactMessage('');
+          }, 4000);
+        };
+
+        return (
+          <div>
+            {/* ====================================================================
+                1. Ambient Backgrounds
+                ==================================================================== */}
+            <div className="bg-ambient" style={{ top: '10vh', left: '10vw', width: '400px', height: '400px', background: '#8fa88b' }}></div>
+            <div className="bg-ambient" style={{ top: '80vh', right: '5vw', width: '500px', height: '500px', background: '#a2d2df' }}></div>
+            <div className="bg-ambient" style={{ top: '220vh', left: '8vw', width: '450px', height: '450px', background: '#8fa88b' }}></div>
+            <div className="bg-ambient" style={{ top: '380vh', right: '8vw', width: '500px', height: '500px', background: '#a2d2df' }}></div>
+
+            {/* ====================================================================
+                2. Floating Oryzo Product Layer (Visual core)
+                ==================================================================== */}
+            <div className="floating-product-wrapper">
+              <div className="floating-product-container">
+                <img src="assets/images/shaved_ice_hero.png" alt="招牌剉冰" className="floating-product" />
+                <div className="product-glow"></div>
+              </div>
             </div>
-        </div>
-    </header>
 
-    <!-- Hero Section (Parallax) -->
-    <section id="home" class="hero parallax">
-        <div class="hero-content glass-card fade-in">
-            <h1>東民冰菓室</h1>
-            <p>堅持純粹，手作幸福滋味</p>
-            <p class="subtitle">天然食材 ✕ 特製雪花冰磚</p>
-            <a href="#menu" class="btn primary-btn">查看沁涼菜單</a>
-        </div>
-    </section>
+            {/* ====================================================================
+                3. Fixed Header Navigation
+                ==================================================================== */}
+            <header className={`navbar ${activeSection !== 'home' ? 'scrolled' : ''}`}>
+              <div className="nav-container">
+                <a href="#home" className="logo" onClick={(e) => scrollToSection(e, 'home')}>
+                  <i className="fa-solid fa-snowflake"></i> 東民冰菓室
+                </a>
+                
+                <nav className={`nav-links ${mobileNavOpen ? 'active' : ''}`}>
+                  <a href="#home" className={activeSection === 'home' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'home')}>首頁</a>
+                  <a href="#about" className={activeSection === 'about' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'about')}>品牌介紹</a>
+                  <a href="#menu" className={activeSection === 'menu' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'menu')}>美味菜單</a>
+                  <a href="#features" className={activeSection === 'features' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'features')}>店家特色</a>
+                  <a href="#news" className={activeSection === 'news' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'news')}>最新消息</a>
+                  <a href="#gallery" className={activeSection === 'gallery' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'gallery')}>精選相簿</a>
+                  <a href="#location" className={activeSection === 'location' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'location')}>位置交通</a>
+                  <a href="#contact" className={activeSection === 'contact' ? 'active' : ''} onClick={(e) => scrollToSection(e, 'contact')}>聯絡我們</a>
+                </nav>
 
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title">品牌介紹 <span class="subtitle">About Us</span></h2>
-            <div class="about-grid">
-                <div class="about-text fade-in">
-                    <h3><i class="fa-solid fa-book-open"></i> 店家故事</h3>
-                    <p>東民冰菓室源於對純粹冰品的熱愛。我們相信，一碗好冰，不僅能帶來清涼，更能喚起人們心中最純粹的快樂記憶。從選材到製作，我們嚴格把關每一道工序，只為呈現最完美的風味。</p>
+                <div className="hamburger" onClick={() => setMobileNavOpen(!mobileNavOpen)}>
+                  <i className={`fa-solid ${mobileNavOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+                </div>
+              </div>
+            </header>
+
+            {/* ====================================================================
+                4. SPA Content Sections
+                ==================================================================== */}
+            <main>
+              {/* HOME SECTION */}
+              <section id="home" className="scroll-section hero-section">
+                <div className="container">
+                  <div className="hero-text">
+                    <span className="hero-tagline glow-text">Dongmin Ice Shop</span>
+                    <h1 className="hero-title">堅持純粹，<br />手作幸福滋味</h1>
+                    <p className="hero-desc">東民冰菓室為您提供最天然、細緻的消暑聖品。我們精選在地食材，自製純淨雪花冰磚，每一口都是最純粹的幸福回憶。</p>
+                    <div className="hero-btns">
+                      <a href="#menu" className="btn btn-primary" onClick={(e) => scrollToSection(e, 'menu')}>查看沁涼菜單</a>
+                      <a href="#about" className="btn btn-secondary" onClick={(e) => scrollToSection(e, 'about')}>探索品牌故事</a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* ABOUT SECTION */}
+              <section id="about" className="scroll-section about-section">
+                <div className="container">
+                  <div className="about-grid">
+                    <div className="about-content">
+                      <div>
+                        <span className="section-label">About Us</span>
+                        <h2 className="section-title">天然食材 ✕ 獨家製冰</h2>
+                      </div>
+                      
+                      <div className="about-story-item">
+                        <div className="about-story-icon"><i className="fa-solid fa-book-open"></i></div>
+                        <div className="about-story-text">
+                          <h3>店家故事</h3>
+                          <p>東民冰菓室源於對純粹冰品的熱愛。我們相信，一碗好冰，不僅能帶來清涼，更能喚起人們心中最溫馨、快樂的經典記憶。我們用心還原記憶中的純粹滋味。</p>
+                        </div>
+                      </div>
+
+                      <div className="about-story-item">
+                        <div className="about-story-icon"><i className="fa-solid fa-heart"></i></div>
+                        <div className="about-story-text">
+                          <h3>經營理念</h3>
+                          <p>「以誠待客，以心製冰」。我們堅持使用百分之百新鮮水果與特選天然食材，堅決拒絕人工添加物，讓顧客吃得安心、吃得健康，感受手作真誠溫度。</p>
+                        </div>
+                      </div>
+
+                      <div className="about-story-item">
+                        <div className="about-story-icon"><i className="fa-solid fa-leaf"></i></div>
+                        <div className="about-story-text">
+                          <h3>食材與製作特色</h3>
+                          <p>精選在地當季水果，並每日清晨親手火候熬煮豆類配料。招牌雪花冰磚更是獨家研發調配製成，口感如絲綢般綿密細緻，入口即化，帶給您極佳的味蕾體驗。</p>
+                        </div>
+                      </div>
+                    </div>
                     
-                    <h3><i class="fa-solid fa-heart"></i> 經營理念</h3>
-                    <p>「以誠待客，以心製冰」。我們堅持使用新鮮水果與天然食材，拒絕人工添加物，讓顧客吃得安心、吃得健康，感受每一口冰品帶來的誠意。</p>
-                    
-                    <h3><i class="fa-solid fa-leaf"></i> 食材與製作特色</h3>
-                    <p>我們精選在地當季水果，並每日親手熬煮配料（如紅豆、綠豆、芋圓等）。招牌的雪花冰磚更是獨家自製，口感綿密細緻，入口即化，帶給您極致的冰涼體驗。</p>
+                    {/* Invisible grid placeholder on desktop to reserve space for floating ice image */}
+                    <div className="about-right-spacer"></div>
+                  </div>
                 </div>
-                <div class="about-image fade-in">
-                    <img src="assets/images/shaved_ice_hero.png" alt="招牌冰品">
-                    <div class="img-backdrop"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+              </section>
 
-    <!-- Menu Section -->
-    <section id="menu" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">美味菜單 <span class="subtitle">Menu</span></h2>
-            
-            <div class="menu-tabs fade-in">
-                <button class="tab-btn active" data-target="signature">招牌冰品</button>
-                <button class="tab-btn" data-target="shaved">傳統剉冰</button>
-                <button class="tab-btn" data-target="snow">雪花冰</button>
-                <button class="tab-btn" data-target="seasonal">季節限定</button>
-                <button class="tab-btn" data-target="toppings">精選配料</button>
-                <button class="tab-btn" data-target="others">其他餐點</button>
-            </div>
+              {/* MENU SECTION */}
+              <section id="menu" className="scroll-section menu-section">
+                <div className="container">
+                  <div className="menu-header">
+                    <span className="section-label">Menu</span>
+                    <h2 className="section-title">美味菜單</h2>
+                    <div className="menu-tabs">
+                      <button className={`menu-tab-btn ${menuTab === 'signature' ? 'active' : ''}`} onClick={() => setMenuTab('signature')}>招牌冰品</button>
+                      <button className={`menu-tab-btn ${menuTab === 'snow' ? 'active' : ''}`} onClick={() => setMenuTab('snow')}>牛奶雪花冰</button>
+                      <button className={`menu-tab-btn ${menuTab === 'toppings' ? 'active' : ''}`} onClick={() => setMenuTab('toppings')}>精選配料介紹</button>
+                      <button className={`menu-tab-btn ${menuTab === 'others' ? 'active' : ''}`} onClick={() => setMenuTab('others')}>其他餐點/飲品</button>
+                    </div>
+                  </div>
 
-            <div class="menu-content fade-in">
-                <!-- Signature Ice -->
-                <div class="menu-category active" id="signature">
-                    <div class="menu-grid">
-                        <a href="purchase.html?item=signature_mixed" class="menu-card glass-card">
-                            <div class="menu-icon"><i class="fa-solid fa-star"></i></div>
-                            <h4>東民綜合招牌冰</h4>
-                            <p>滿滿手工配料，經典不敗的絕佳組合。</p>
-                            <span class="price">$80</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=mango-duet" class="menu-card glass-card">
-                            <div class="menu-icon"><i class="fa-solid fa-crown"></i></div>
-                            <h4>超級芒果雙重奏</h4>
-                            <p>新鮮芒果塊搭配芒果雪花冰，極致享受。</p>
-                            <span class="price">$150</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                    </div>
-                </div>
-                <!-- Shaved Ice -->
-                <div class="menu-category" id="shaved">
-                    <div class="menu-grid">
-                        <a href="purchase.html?item=brown-sugar" class="menu-card glass-card">
-                            <h4>古早味黑糖剉冰</h4>
-                            <p>自製濃郁黑糖水，可任選四種配料。</p>
-                            <span class="price">$65</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=pineapple-ice" class="menu-card glass-card">
-                            <h4>鳳梨冰</h4>
-                            <p>古法熬煮鳳梨醬，酸甜清爽解膩。</p>
-                            <span class="price">$70</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                    </div>
-                </div>
-                <!-- Snow Ice -->
-                <div class="menu-category" id="snow">
-                    <div class="menu-grid">
-                        <a href="purchase.html?item=milk-snow" class="menu-card glass-card">
-                            <h4>牛奶綿綿雪花冰</h4>
-                            <p>純濃鮮奶製成，奶香四溢。</p>
-                            <span class="price">$90</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=matcha-snow" class="menu-card glass-card">
-                            <h4>抹茶紅豆雪花冰</h4>
-                            <p>日式靜岡抹茶搭配蜜紅豆。</p>
-                            <span class="price">$110</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                    </div>
-                </div>
-                <!-- Seasonal -->
-                <div class="menu-category" id="seasonal">
-                    <div class="menu-grid">
-                        <a href="purchase.html?item=mango-seasonal" class="menu-card glass-card">
-                            <h4>夏季限定：新鮮芒果冰</h4>
-                            <p>產地直送愛文芒果，香氣濃郁。</p>
-                            <span class="price">$140</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=strawberry-seasonal" class="menu-card glass-card">
-                            <h4>冬季限定：草莓戀人冰</h4>
-                            <p>嚴選大湖草莓，酸甜戀愛滋味。</p>
-                            <span class="price">$160</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                    </div>
-                </div>
-                <!-- Toppings -->
-                <div class="menu-category" id="toppings">
-                    <div class="menu-grid">
-                        <div class="menu-card glass-card topping-card">
-                            <h4>手熬紅豆</h4>
+                  {menuTab !== 'toppings' ? (
+                    <div className="menu-grid">
+                      {MENU_DATA[menuTab].map((product) => (
+                        <div className="menu-card" key={product.id}>
+                          <div className="menu-card-top">
+                            <div className="menu-card-icon"><i className={`fa-solid ${product.icon}`}></i></div>
+                            <h3 className="menu-card-title">{product.name}</h3>
+                            <p className="menu-card-desc">{product.desc}</p>
+                          </div>
+                          <div className="menu-card-bottom">
+                            <span className="menu-card-price">${product.price}</span>
+                            <div className="menu-card-btn" onClick={() => handleOpenOrder(product)}>
+                              立即訂購 <i className="fa-solid fa-arrow-right"></i>
+                            </div>
+                          </div>
                         </div>
-                        <div class="menu-card glass-card topping-card">
-                            <h4>綿密綠豆</h4>
-                        </div>
-                        <div class="menu-card glass-card topping-card">
-                            <h4>Q彈粉圓</h4>
-                        </div>
-                        <div class="menu-card glass-card topping-card">
-                            <h4>手工芋圓/地瓜圓</h4>
-                        </div>
+                      ))}
                     </div>
-                </div>
-                <!-- Others -->
-                <div class="menu-category" id="others">
-                    <div class="menu-grid">
-                        <a href="purchase.html?item=fry-platter" class="menu-card glass-card">
-                            <h4>酥脆炸物拼盤</h4>
-                            <p>薯條、雞塊、洋蔥圈。</p>
-                            <span class="price">$120</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=waffle" class="menu-card glass-card">
-                            <h4>蜂蜜鬆餅</h4>
-                            <p>現烤外酥內軟，搭配鮮奶油。</p>
-                            <span class="price">$90</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
-                        <a href="purchase.html?item=drinks" class="menu-card glass-card">
-                            <h4>各式冷飲</h4>
-                            <p>紅茶、綠茶、鮮奶茶等。</p>
-                            <span class="price">$40起</span>
-                            <span class="order-btn">立即訂購</span>
-                        </a>
+                  ) : (
+                    <div className="toppings-showcase-grid">
+                      {MENU_DATA.toppings.map((topping) => (
+                        <div className="topping-showcase-card glass-card" key={topping.id}>
+                          <div className="menu-card-icon"><i className={`fa-solid ${topping.icon}`}></i></div>
+                          <h4>{topping.name}</h4>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '10px' }}>{topping.desc}</p>
+                        </div>
+                      ))}
                     </div>
+                  )}
                 </div>
-            </div>
-        </div>
-    </section>
+              </section>
 
-    <!-- Features Section (Parallax) -->
-    <section id="features" class="section parallax features-parallax">
-        <div class="container relative">
-            <h2 class="section-title text-white">店家特色 <span class="subtitle text-light">Features</span></h2>
-            <div class="features-grid">
-                <div class="feature-card glass-card fade-in">
-                    <i class="fa-solid fa-cube"></i>
-                    <h3>自製雪花冰磚</h3>
-                    <p>不使用代工廠，我們親自調配每一塊雪花冰磚，確保口感與品質的完美。</p>
-                </div>
-                <div class="feature-card glass-card fade-in">
-                    <i class="fa-solid fa-droplet"></i>
-                    <h3>衛生冰塊</h3>
-                    <p>使用多重過濾淨水設備製冰，確保每一口冰都純淨無瑕、安全衛生。</p>
-                </div>
-                <div class="feature-card glass-card fade-in">
-                    <i class="fa-solid fa-fire-burner"></i>
-                    <h3>每日現煮配料</h3>
-                    <p>豆類與圓類配料堅持每日清晨新鮮現煮，保留食材最佳的口感與香氣。</p>
-                </div>
-                <div class="feature-card glass-card fade-in">
-                    <i class="fa-solid fa-eye"></i>
-                    <h3>透明製作過程</h3>
-                    <p>開放式吧台設計，讓您能親眼見證冰品製作的每一個步驟，吃得更安心。</p>
-                </div>
-            </div>
-        </div>
-    </section>
+              {/* FEATURES SECTION (Scroll Pinned Oryzo Teardown) */}
+              <section id="features" className="features-container-height">
+                <div className="features-sticky">
+                  <div className="features-title-container">
+                    <span className="section-label">Features</span>
+                    <h2 className="section-title">店家特色</h2>
+                  </div>
 
-    <!-- News & Gallery Section -->
-    <section class="section" style="padding-bottom: 0;">
-        <div class="container">
-            <div class="news-gallery-wrapper">
-                <!-- News -->
-                <div id="news" class="news-section fade-in">
-                    <h2 class="section-title">最新消息 <span class="subtitle">News</span></h2>
-                    <ul class="news-list">
-                        <li>
-                            <span class="news-date">2026/06/01</span>
-                            <span class="news-tag highlight">季節限定</span>
-                            <span class="news-text">夏日芒果季正式開跑！愛文芒果冰重磅回歸。</span>
-                        </li>
-                        <li>
-                            <span class="news-date">2026/05/20</span>
-                            <span class="news-tag">優惠活動</span>
-                            <span class="news-text">歡慶端午，指定冰品第二件半價！</span>
-                        </li>
-                        <li>
-                            <span class="news-date">2026/05/10</span>
-                            <span class="news-tag">營業公告</span>
-                            <span class="news-text">夏季營業時間調整：週一至週日 11:00 - 22:00。</span>
-                        </li>
-                    </ul>
-                </div>
 
-                <!-- Gallery Preview -->
-                <div id="gallery" class="gallery-preview fade-in">
-                    <h2 class="section-title">精選相簿 <span class="subtitle">Gallery</span></h2>
-                    <div class="gallery-grid">
-                        <div class="gallery-item"><img src="assets/images/shaved_ice_hero.png" alt="冰品照片"></div>
-                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-store"></i> 店內環境</div></div>
-                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-blender"></i> 製作過程</div></div>
-                        <div class="gallery-item"><div class="placeholder-img"><i class="fa-solid fa-ice-cream"></i> 更多冰品</div></div>
+
+                  {/* Feature callout panels - active via GSAP scroll trigger */}
+                  <div className="feature-callout" id="feature-1">
+                    <div className="feature-callout-card glass-card">
+                      <i className="fa-solid fa-cube"></i>
+                      <h3>自製雪花冰磚</h3>
+                      <p>不假他人之手，我們調和特選牛乳及天然水果原料製磚，確保無添加人工香精。</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                  </div>
 
-    <!-- Location & Contact -->
-    <section id="contact" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">聯絡我們 <span class="subtitle">Location & Contact</span></h2>
-            <div class="contact-grid fade-in">
-                <div class="contact-info glass-card">
-                    <div class="info-item">
-                        <i class="fa-solid fa-location-dot"></i>
+                  <div className="feature-callout" id="feature-2">
+                    <div className="feature-callout-card glass-card">
+                      <i className="fa-solid fa-droplet"></i>
+                      <h3>衛生過濾冰塊</h3>
+                      <p>引進多重過濾超淨水製冰設備，保障製冰過程極致純淨、符合安全衛生標準。</p>
+                    </div>
+                  </div>
+
+                  <div className="feature-callout" id="feature-3">
+                    <div className="feature-callout-card glass-card">
+                      <i className="fa-solid fa-fire-burner"></i>
+                      <h3>每日手工現煮配料</h3>
+                      <p>紅豆、綠豆及圓類等配料，堅持每日清晨小火燉煮，保留最佳口感與濃郁原香。</p>
+                    </div>
+                  </div>
+
+                  <div className="feature-callout" id="feature-4">
+                    <div className="feature-callout-card glass-card">
+                      <i className="fa-solid fa-eye"></i>
+                      <h3>吧台透明化製作</h3>
+                      <p>採用開放式玻璃吧台設計，能親自目睹美味冰品的層層堆疊裝盤，安心有保障。</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* NEWS SECTION */}
+              <section id="news" className="scroll-section news-section">
+                <div className="container">
+                  <div style={{ textAlign: 'center' }}>
+                    <span className="section-label">News</span>
+                    <h2 className="section-title">最新消息</h2>
+                  </div>
+
+                  <div className="news-timeline">
+                    {NEWS_DATA.map((item) => (
+                      <div className="news-item" key={item.id}>
+                        <div className="news-dot"></div>
+                        <div className="news-card-inner glass-card">
+                          <div className="news-meta">
+                            <span className="news-date">{item.date}</span>
+                            <span className={`news-tag ${item.isHighlight ? 'highlight' : ''}`}>{item.tag}</span>
+                          </div>
+                          <h3 className="news-title">{item.title}</h3>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* GALLERY SECTION */}
+              <section id="gallery" className="scroll-section gallery-section">
+                <div className="container">
+                  <div style={{ textAlign: 'center' }}>
+                    <span className="section-label">Gallery</span>
+                    <h2 className="section-title">精選相簿</h2>
+                  </div>
+
+                  <div className="gallery-grid">
+                    {GALLERY_DATA.map((item) => (
+                      <div className="gallery-card" key={item.id}>
+                        {item.img ? (
+                          <>
+                            <img src={item.img} alt={item.title} className="gallery-img" />
+                            <div className="gallery-overlay">
+                              <i className={`fa-solid ${item.icon}`}></i>
+                              <h4>{item.title}</h4>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="gallery-placeholder">
+                            <i className={`fa-solid ${item.icon}`}></i>
+                            <h4>{item.title}</h4>
+                            <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>東民冰菓室現場紀實</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* LOCATION & DETAILS SECTION */}
+              <section id="location" className="scroll-section location-section">
+                <div className="container">
+                  <div style={{ textAlign: 'center' }}>
+                    <span className="section-label">Location</span>
+                    <h2 className="section-title">位置與交通</h2>
+                  </div>
+
+                  <div className="location-grid">
+                    <div className="info-card glass-card">
+                      <div className="info-block">
+                        <div className="info-icon"><i className="fa-solid fa-location-dot"></i></div>
+                        <div className="info-text">
+                          <h4>門市地址</h4>
+                          <p>台北市大安區冰店路123號</p>
+                          <small>* 捷運大安站步行5分鐘即可抵達</small>
+                        </div>
+                      </div>
+
+                      <div className="info-block">
+                        <div className="info-icon"><i className="fa-solid fa-square-parking"></i></div>
+                        <div className="info-text">
+                          <h4>停車提醒</h4>
+                          <p>店門口設有機車停放格。</p>
+                          <p>汽車可停放於鄰近大安國小地下收費停車場，步行約2分鐘。</p>
+                        </div>
+                      </div>
+
+                      <div className="info-block">
+                        <div className="info-icon"><i className="fa-solid fa-phone"></i></div>
+                        <div className="info-text">
+                          <h4>聯絡電話</h4>
+                          <p>02-2345-6789</p>
+                        </div>
+                      </div>
+
+                      <div className="info-block">
+                        <div className="info-icon"><i className="fa-solid fa-clock"></i></div>
+                        <div className="info-text">
+                          <h4>營業時間</h4>
+                          <p>週一至週日 11:00 - 22:00</p>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--accent-sage)' }}>(特殊公休日將提前公告於FB/IG)</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="map-card glass-card">
+                      <div className="map-placeholder">
+                        <iframe 
+                          title="google-map"
+                          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3615.0028901844976!2d121.5410189!3d25.0339639!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442abd37d7c6755%3A0xe9cf159cb030a524!2z5ZyL56uL6Ie654Gj5aSn5a24!5e0!3m2!1szh-TW!2stw!4v1689234567890!5m2!1szh-TW!2stw" 
+                          allowFullScreen="" 
+                          loading="lazy" 
+                          referrerPolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* CONTACT SECTION */}
+              <section id="contact" className="scroll-section contact-section">
+                <div className="container">
+                  <div style={{ textAlign: 'center' }}>
+                    <span className="section-label">Contact</span>
+                    <h2 className="section-title">聯絡我們</h2>
+                  </div>
+
+                  <div className="contact-layout">
+                    <div className="contact-left">
+                      <div>
+                        <p className="contact-prompt">對於冰品、活動合作或外送服務有任何疑問？請隨時填寫表單或透過社群軟體與我們聯絡！</p>
+                        <p style={{ color: 'var(--text-muted)' }}>您的建議與反饋是我們前進的動力，我們通常會在 24 小時內回覆您。</p>
+                      </div>
+
+                      <div className="social-links-row">
+                        <a href="#" className="social-circle" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" className="social-circle" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+                        <a href="#" className="social-circle" aria-label="LINE"><i className="fa-brands fa-line"></i></a>
+                      </div>
+                    </div>
+
+                    <form className="contact-form glass-card" onSubmit={handleContactSubmit}>
+                      {contactSubmitted ? (
+                        <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--accent-ice)' }}>
+                          <i className="fa-solid fa-circle-check fa-3x" style={{ marginBottom: '15px' }}></i>
+                          <h3>訊息已成功發送！</h3>
+                          <p style={{ color: 'var(--text-muted)', marginTop: '8px', fontSize: '0.9rem' }}>感謝您的來信，我們將盡快與您聯絡。</p>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="form-row-grid">
+                            <div className="form-element">
+                              <label htmlFor="c-name">您的姓名 *</label>
+                              <input type="text" id="c-name" className="form-input-element" value={contactName} onChange={(e) => setContactName(e.target.value)} required placeholder="王小明" />
+                            </div>
+                            <div className="form-element">
+                              <label htmlFor="c-email">電子信箱 *</label>
+                              <input type="email" id="c-email" className="form-input-element" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required placeholder="example@mail.com" />
+                            </div>
+                          </div>
+                          <div className="form-element">
+                            <label htmlFor="c-msg">訊息內容 *</label>
+                            <textarea id="c-msg" className="form-input-element" value={contactMessage} onChange={(e) => setContactMessage(e.target.value)} required placeholder="請輸入您想對我們說的話..." />
+                          </div>
+                          <button type="submit" className="btn btn-primary" style={{ marginTop: '10px' }}>送出訊息</button>
+                        </>
+                      )}
+                    </form>
+                  </div>
+                </div>
+              </section>
+            </main>
+
+            {/* ====================================================================
+                5. Footer
+                ==================================================================== */}
+            <footer>
+              <div className="footer-content container">
+                <p>&copy; 2026 東民冰菓室 Dongmin Ice Shop. All rights reserved.</p>
+              </div>
+            </footer>
+
+            {/* ====================================================================
+                6. Order System Modal SPA Overlay
+                ==================================================================== */}
+            <div className={`modal-overlay-wrapper ${isOrderModalOpen ? 'active' : ''}`}>
+              {selectedProduct && (
+                <div className="modal-container">
+                  <div className="modal-close-btn" onClick={handleCloseOrder}><i className="fa-solid fa-xmark"></i></div>
+                  
+                  {!orderSuccess ? (
+                    <div className="modal-body-grid">
+                      {/* Product Detail Side */}
+                      <div className="modal-product-side">
+                        <div className="modal-product-icon"><i className={`fa-solid ${selectedProduct.icon}`}></i></div>
+                        <h2 className="modal-product-name">{selectedProduct.name}</h2>
+                        <span className="modal-product-price">${selectedProduct.price}</span>
+                        <p className="modal-product-desc">{selectedProduct.desc}</p>
+                      </div>
+
+                      {/* Form Side */}
+                      <form className="modal-form-side" onSubmit={handleConfirmOrder}>
+                        {/* Ingredients default tags */}
+                        {selectedProduct.ingredients && (
+                          <div>
+                            <h4 className="modal-section-title">基本配料</h4>
+                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                              {selectedProduct.ingredients.map((ing, idx) => (
+                                <span className="ingredient-tag" key={idx}>{ing}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Toppings Select */}
                         <div>
-                            <h4>地址</h4>
-                            <p>台北市大安區冰店路123號</p>
-                            <small class="notice">* 附近有收費停車場，機車可停放於門口停車格</small>
+                          <h4 className="modal-section-title">加購額外配料 (每項 +$10)</h4>
+                          <div className="toppings-select-grid">
+                            {TOPPINGS_ADDON_LIST.map((addon, idx) => (
+                              <label key={idx} className={`topping-checkbox-label ${selectedAddons.includes(addon.name) ? 'selected' : ''}`}>
+                                <input type="checkbox" checked={selectedAddons.includes(addon.name)} onChange={() => handleToggleAddon(addon)} />
+                                <span>{addon.name}</span>
+                                <span className="topping-price">+$10</span>
+                              </label>
+                            ))}
+                          </div>
                         </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fa-solid fa-phone"></i>
-                        <div>
-                            <h4>電話聯絡</h4>
-                            <p>02-2345-6789</p>
+
+                        {/* Quantity and inputs */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                          <div className="form-element">
+                            <label>訂購數量</label>
+                            <div className="quantity-controls">
+                              <button type="button" className="quantity-btn" onClick={() => setOrderQuantity(Math.max(1, orderQuantity - 1))}>-</button>
+                              <span className="quantity-display">{orderQuantity}</span>
+                              <button type="button" className="quantity-btn" onClick={() => setOrderQuantity(orderQuantity + 1)}>+</button>
+                            </div>
+                          </div>
+                          <div className="form-element">
+                            <label htmlFor="customer-name">訂購人姓名 *</label>
+                            <input type="text" id="customer-name" className="form-input-element" value={customerName} onChange={(e) => setCustomerName(e.target.value)} required placeholder="請輸入姓名" />
+                          </div>
                         </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fa-solid fa-clock"></i>
-                        <div>
-                            <h4>營業時間</h4>
-                            <p>週一至週日 11:00 - 22:00</p>
-                            <p>(不定期公休請見粉專公告)</p>
+
+                        <div className="form-element">
+                          <label htmlFor="customer-phone">聯絡電話 (手機) *</label>
+                          <input type="tel" id="customer-phone" className="form-input-element" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} required pattern="^09[0-9]{8}$" title="請輸入有效的手機號碼 (例如: 0912345678)" placeholder="0912345678" />
                         </div>
+
+                        <div className="form-element">
+                          <label htmlFor="order-notes">備註說明</label>
+                          <input type="text" id="order-notes" className="form-input-element" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder="例如: 冰少一點、不要太甜" />
+                        </div>
+
+                        {/* Total price summary card */}
+                        <div className="receipt-wrapper" style={{ padding: '15px' }}>
+                          <div className="receipt-row" style={{ fontSize: '1.15rem' }}>
+                            <span className="label" style={{ color: 'var(--text-main)', fontWeight: '600' }}>應付總金額</span>
+                            <span className="value" style={{ color: 'var(--accent-ice)', fontSize: '1.4rem' }}>${calculateTotal()}</span>
+                          </div>
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '15px', fontSize: '1.05rem' }}>確定送出訂單</button>
+                      </form>
                     </div>
-                    <div class="social-links">
-                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" aria-label="Line"><i class="fa-brands fa-line"></i></a>
+                  ) : (
+                    /* Receipt screen */
+                    <div style={{ padding: '60px 40px', maxWidth: '600px', margin: '0 auto' }}>
+                      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                        <i className="fa-solid fa-circle-check fa-4x" style={{ color: 'var(--accent-ice)', marginBottom: '15px', filter: 'drop-shadow(0 0 10px rgba(162, 210, 223, 0.3))' }}></i>
+                        <h2 style={{ fontSize: '1.8rem', color: 'var(--accent-cream)' }}>您的訂單已送出！</h2>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '5px' }}>感謝您的預訂，請憑以下明細至櫃檯付費取餐</p>
+                      </div>
+
+                      {receiptData && (
+                        <div className="receipt-wrapper">
+                          <div className="receipt-row" style={{ borderBottom: '1px solid rgba(245, 242, 235, 0.1)', paddingBottom: '15px', marginBottom: '15px' }}>
+                            <span className="label" style={{ fontWeight: '600' }}>取餐編號</span>
+                            <span className="value" style={{ color: 'var(--accent-ice)', fontWeight: '700', fontSize: '1.2rem' }}>{receiptData.id}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">訂購品名</span>
+                            <span className="value">{receiptData.productName}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">訂購數量</span>
+                            <span className="value">{receiptData.quantity} 碗</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">額外配料</span>
+                            <span className="value">{receiptData.addons}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">訂購人</span>
+                            <span className="value">{receiptData.customerName}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">聯絡電話</span>
+                            <span className="value">{receiptData.customerPhone}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="label">備註說明</span>
+                            <span className="value">{receiptData.notes}</span>
+                          </div>
+                          <div className="receipt-row total-row">
+                            <span className="label" style={{ color: 'var(--text-main)' }}>總計金額</span>
+                            <span className="value">${receiptData.total}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <button type="button" className="btn btn-primary" onClick={handleCloseOrder} style={{ width: '100%', marginTop: '35px', padding: '14px' }}>返回首頁</button>
                     </div>
+                  )}
                 </div>
-                <div class="map-container glass-card">
-                    <!-- Placeholder for Google Maps -->
-                    <div class="map-placeholder">
-                        <i class="fa-solid fa-map-location-dot fa-3x"></i>
-                        <p>Google Map 載入區域</p>
-                    </div>
-                </div>
+              )}
             </div>
-        </div>
-    </section>
+          </div>
+        );
+      }
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 東民冰菓室 Dongmin Ice Shop. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+      // Render React App
+      const rootElement = document.getElementById('root');
+      const reactRoot = ReactDOM.createRoot(rootElement);
+      reactRoot.render(<App />);
+    </script>
+    <!-- Organic border shape distortion filter for background image -->
+    <svg style="position: absolute; width: 0; height: 0;" width="0" height="0">
+      <defs>
+        <filter id="organic-edge-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="55" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          <feGaussianBlur in="displaced" stdDeviation="4" />
+        </filter>
+      </defs>
+    </svg>
 </body>
 </html>
